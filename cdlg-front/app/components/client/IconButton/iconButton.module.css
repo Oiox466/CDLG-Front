@@ -1,0 +1,119 @@
+:root {
+    --cut: 30px;
+    --cut-bottom: 15px;
+    --a: 15px;
+    --th: 2px;
+}
+
+.button {
+    all: unset;
+    display: inline-block;
+    cursor: pointer;
+    background: none;
+    position: relative;
+    margin: 10px;
+}
+
+.container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    padding: 0.5em 1em;
+    height: 70px;
+    min-width: 200px;
+    width: fit-content;
+    box-sizing: border-box;
+    overflow: visible;
+
+    clip-path: polygon(
+        var(--cut) 0%,
+        100% 0%,
+        100% calc(100% - var(--cut-bottom)),
+        calc(100% - var(--cut-bottom)) 100%,
+        0% 100%,
+        0% var(--cut)
+    );
+
+    border: var(--th) solid #D0D0D0;
+    background: linear-gradient(to right, rgba(200,200,200,0.3) 50%, transparent 50%);
+    background-size: 200% 100%;
+    background-position: right bottom;
+    transition: background-position 0.6s ease;
+}
+
+.button:hover .container {
+    background-position: left bottom;
+}
+
+.diagonalTop {
+    position: absolute;
+    width: 41.24px;
+    height: 41.24px;
+    top: 8.9px;
+    left: 8.9px;
+    transform: rotate(-45deg);
+    transform-origin: center;
+    background: transparent;
+    border: solid #D0D0D0;
+    border-width: var(--th) 0 0 0;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.diagonalBottom {
+    position: absolute;
+    width: 21.21px;
+    height: 21.21px;
+    bottom: 2.3px;
+    right: 2.3px;
+    transform: rotate(-45deg);
+    transform-origin: center;
+    background: transparent;
+    border: solid #D0D0D0;
+    border-width: 0 0 var(--th) 0;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.diagonalFake {
+    position: absolute;
+    width: 37px;
+    height: 37px;
+    top: 13px;
+    left: 13px;
+    transform: rotate(-45deg);
+    transform-origin: center;
+    background: transparent;
+    border: solid #D0D0D0;
+    border-width: var(--th) 0 0 0;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.text {
+    font-size: 1em;
+    color: rgb(255, 255, 255);
+    margin-right: 0.5em;
+    margin-left: 1.2em;
+    z-index: 10;
+}
+
+.rombo {
+    height: 80%;
+    aspect-ratio: 1 / 1;
+    border:var(--th) solid #D0D0D0;
+    transform: rotate(45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    z-index: 10;
+
+}
+
+.rombo > * {
+    transform: rotate(-45deg);
+    font-size: 0.9em;
+    color: rgb(255, 255, 255);
+}
