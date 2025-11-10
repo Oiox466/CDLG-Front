@@ -1,0 +1,80 @@
+:root {
+  --border-color: #D0D0D0;
+  --th: 2px;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  height: 70px;
+  padding: 0.5em 1em;
+}
+
+/* === CÍRCULOS === */
+.circleOuter,
+.circleMiddle,
+.circleInner {
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Outer → semicírculo superior-derecho */
+.circleOuter {
+  width: 50px;
+  height: 50px;
+  border: var(--th) solid transparent;
+  border-top-color: var(--border-color);
+  border-right-color: var(--border-color);
+  transform: rotate(25deg);
+  margin-right: -24px; /* más pegado al input */
+  z-index: 2;
+}
+
+/* Middle → semicírculo inferior-izquierdo */
+.circleMiddle {
+  width: 43px;
+  height: 43px;
+  border: var(--th) solid transparent;
+  border-bottom-color: var(--border-color);
+  border-left-color: var(--border-color);
+}
+
+/* Inner → igual al middle pero más pequeño */
+.circleInner {
+  width: 36px;
+  height: 36px;
+  border: var(--th) solid transparent;
+  border-bottom-color: var(--border-color);
+  border-left-color: var(--border-color);
+}
+
+/* === INPUT === */
+.input {
+  flex: 1;
+  background: transparent;
+  border: var(--th) solid var(--border-color);
+  border-left: none; /* sin borde izquierdo */
+  border-radius: 10px;
+  color: white;
+  font-size: 1em;
+  padding: 0.6em 1em 0.6em 2em;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  left: -4px; /* compensa el borde para pegar más el texto */
+  clip-path: polygon(12px 0%, 100% 0%, 100% 100%, 12px 100%);
+
+}
+
+.input:focus {
+  border-color: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+}
+
+.input::placeholder {
+  color: var(--border-color);
+}
