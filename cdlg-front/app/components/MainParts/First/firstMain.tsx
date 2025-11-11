@@ -20,8 +20,6 @@ const FirstMain: React.FC = () => {
                     </IconButton>
                 </div>
             </div>
-
-
         </div>
     );
 };

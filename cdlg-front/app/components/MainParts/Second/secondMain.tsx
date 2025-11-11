@@ -20,8 +20,6 @@ const SecondMain: React.FC = () => {
                     </ul>
                 </div>
             </div>
-
-
         </div>
     );
 };

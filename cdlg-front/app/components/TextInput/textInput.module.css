@@ -10,7 +10,6 @@
   padding: 0.5em 1em;
 }
 
-/* === CÍRCULOS === */
 .circleOuter,
 .circleMiddle,
 .circleInner {
@@ -22,7 +21,6 @@
   flex-shrink: 0;
 }
 
-/* Outer → semicírculo superior-derecho */
 .circleOuter {
   width: 50px;
   height: 50px;
@@ -30,11 +28,10 @@
   border-top-color: var(--border-color);
   border-right-color: var(--border-color);
   transform: rotate(25deg);
-  margin-right: -24px; /* más pegado al input */
+  margin-right: -24px;
   z-index: 2;
 }
 
-/* Middle → semicírculo inferior-izquierdo */
 .circleMiddle {
   width: 43px;
   height: 43px;
@@ -43,7 +40,6 @@
   border-left-color: var(--border-color);
 }
 
-/* Inner → igual al middle pero más pequeño */
 .circleInner {
   width: 36px;
   height: 36px;
@@ -52,12 +48,11 @@
   border-left-color: var(--border-color);
 }
 
-/* === INPUT === */
 .input {
   flex: 1;
   background: transparent;
   border: var(--th) solid var(--border-color);
-  border-left: none; /* sin borde izquierdo */
+  border-left: none;
   border-radius: 10px;
   color: white;
   font-size: 1em;
@@ -65,7 +60,7 @@
   outline: none;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
   position: relative;
-  left: -4px; /* compensa el borde para pegar más el texto */
+  left: -4px;
   clip-path: polygon(12px 0%, 100% 0%, 100% 100%, 12px 100%);
 
 }

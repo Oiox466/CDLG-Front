@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+.left {
+  width: 30%;
+  background-color: #101010;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2em;
+  box-sizing: border-box;
+}
+
+.right {
+  width: 70%;
+  background-color: #181818;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2em;
+  box-sizing: border-box;
+}
+
+/* Evita que los inputs se achiquen */
+.right input {
+  min-width: 280px;  /* tamaño mínimo visible */
+  width: 80%;        /* se adapta pero no se reduce más del mínimo */
+  flex-shrink: 0;    /* impide que se comprima */
+}
