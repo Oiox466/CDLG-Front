@@ -1,6 +1,6 @@
 import DateProcess from "../components/DateParts/DateProcess/dateProcess";
 
-const Login = () => {
+const Dates = () => {
     return (
         <div className="container">
             <div className="stepsContainer">
@@ -19,4 +19,4 @@ const Login = () => {
     );
 }
 
-export default Login;
+export default Dates;
