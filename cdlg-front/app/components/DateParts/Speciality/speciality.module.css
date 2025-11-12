@@ -1,0 +1,25 @@
+.container {
+  padding: 1.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.table {
+  border-collapse: separate;
+  border-spacing: 10px 10px;
+}
+
+.cell {
+  text-align: center;
+  padding: 5px;
+}
+
+.table button {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.table button:hover {
+  transform: scale(1.05);
+  color: #0077ff;
+}

@@ -1,0 +1,41 @@
+.backgroundImage {
+  display: inline-block;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  font-size: 16px;
+  color: black;
+}
+
+/* Diamante posicionado en esquina inferior izquierda */
+.diamond {
+  height: 25px;
+  aspect-ratio: 1 / 1;
+  border: var(--th) solid #d0d0d0;
+  transform: rotate(45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 15;
+  margin-right: 10px;
+}
+
+.diamond > * {
+  transform: rotate(-45deg);
+  font-size: 0.9em;
+  color: rgb(255, 255, 255);
+}
+
+.text {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  color: #d0d0d0;
+}

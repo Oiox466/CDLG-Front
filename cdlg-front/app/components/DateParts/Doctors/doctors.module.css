@@ -1,0 +1,16 @@
+.container {
+  padding: 1.5em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.table {
+  border-collapse: separate;
+  border-spacing: 20px;
+}
+
+.cell {
+  text-align: center;
+  padding: 5px;
+}

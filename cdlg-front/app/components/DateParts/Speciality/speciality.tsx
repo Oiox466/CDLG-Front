@@ -1,24 +1,29 @@
+import TableButton from "../../TableButton/tableButton";
+import styles from "./speciality.module.css";
+
 const Speciality = ({ onNext }: { onNext: () => void }) => {
-    return (
-        <div className="container">
-        <table>
-            <tbody>
-            <tr>
-                <td><button onClick={onNext}>Cardiología</button></td>
-                <td><button onClick={onNext}>Neurología</button></td>
-                <td><button onClick={onNext}>Pediatría</button></td>
-                <td><button onClick={onNext}>Dermatología</button></td>
-            </tr>
-            <tr>
-                <td><button onClick={onNext}>Oftalmología</button></td>
-                <td><button onClick={onNext}>Oncología</button></td>
-                <td><button onClick={onNext}>Endocrinología</button></td>
-                <td><button onClick={onNext}>Urología</button></td>
-            </tr>
-            </tbody>
-        </table>
-        </div>
-    );
+  return (
+    <div className={styles.container}>
+      <table className={styles.table}>
+        <tbody>
+          <tr>
+            <td className={styles.cell}>
+              <TableButton text="Cardiología" onClick={onNext} />
+            </td>
+            <td className={styles.cell}>
+              <TableButton text="Nutriología" onClick={onNext} />
+            </td>
+            <td className={styles.cell}>
+              <TableButton text="Momología" onClick={onNext} />
+            </td>
+            <td className={styles.cell}>
+              <TableButton text="Oncología" onClick={onNext} />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  );
 };
 
 export default Speciality;
