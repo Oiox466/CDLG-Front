@@ -1,0 +1,76 @@
+.container {
+    text-align: center;
+    padding: 20px;
+    height: 100vh; /* pantalla completa */
+    box-sizing: border-box;
+}
+
+.dateContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch; /* estirar verticalmente */
+    gap: 50px;
+    min-height: calc(100vh - 100px); /* pantalla menos un margen */
+    margin-top: 30px;
+    box-sizing: border-box;
+}
+
+.stepsContainer {
+    padding: 30px;
+    width: 250px; /* ancho fijo */
+    flex-shrink: 0; /* evita que se encoja */
+}
+
+.stepsContainer,
+.actionContainer {
+    background-color: #383838;
+    display: flex;
+    flex-direction: column;
+}
+
+.actionContainer {
+    flex-grow: 1;
+}
+
+.stepList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.stepItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    cursor: default; /* no parece clickeable */
+}
+
+.diamond {
+    height: 25px;
+    aspect-ratio: 1 / 1;
+    border: 1px solid #d0d0d0;
+    transform: rotate(45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.diamond > span {
+    transform: rotate(-45deg);
+    font-size: 0.8em;
+    color: white;
+}
+
+.activeDiamond {
+    transform: rotate(225deg); /* Gira 180° extra */
+    border-color: white;
+}
+
+
+.stepText {
+    font-size: 18px;
+    color: #d0d0d0;
+    margin: 0;
+}

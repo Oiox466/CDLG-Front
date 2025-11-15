@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Form from "../components/Form/form";
-import IconButton from "../components/IconButton/iconButton";
-import TextInput from "../components/TextInput/textInput";
+import Form from "../../components/Form/form";
+import IconButton from "../../components/IconButton/iconButton";
+import TextInput from "../../components/TextInput/textInput";
 import styles from "./register.module.css";
 
 export default function Register() {
@@ -47,14 +47,14 @@ export default function Register() {
             <>
               <IconButton
                 text="Iniciar sesión"
-                onPress={() => router.push("/login")}
+                onPress={() => router.push("/Patient/login")}
               >
                 <p>→</p>
               </IconButton>
 
               <IconButton
                 text="Crear Cuenta"
-                onPress={() => router.push("/dates")}
+                onPress={() => router.push("/Patient/dates")}
               >
                 <p>+</p>
               </IconButton>

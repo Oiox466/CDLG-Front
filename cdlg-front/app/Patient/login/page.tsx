@@ -1,9 +1,9 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import Form from "../components/Form/form";
-import IconButton from "../components/IconButton/iconButton";
-import TextInput from "../components/TextInput/textInput";
+import Form from "../../components/Form/form";
+import IconButton from "../../components/IconButton/iconButton";
+import TextInput from "../../components/TextInput/textInput";
 import styles from "./login.module.css";
 
 export default function Login() {
@@ -41,14 +41,14 @@ export default function Login() {
             <>
               <IconButton
                 text="Iniciar sesión"
-                onPress={() => router.push("/dates")}
+                onPress={() => router.push("/Patient/dates")}
               >
                 <p>→</p>
               </IconButton>
 
               <IconButton
                 text="Crear Cuenta"
-                onPress={() => router.push("/register")}
+                onPress={() => router.push("/Patient/register")}
               >
                 <p>+</p>
               </IconButton>

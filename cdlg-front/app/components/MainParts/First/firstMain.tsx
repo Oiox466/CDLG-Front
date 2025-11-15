@@ -16,14 +16,14 @@ const FirstMain: React.FC = () => {
         <div className={styles["buttons-container"]}>
           <IconButton
             text="Conócenos"
-            onPress={() => router.push("/login")}
+            onPress={() => router.push("/Patient/login")}
           >
             <p>i</p>
           </IconButton>
 
           <IconButton
             text="Registrarte"
-            onPress={() => router.push("/register")}
+            onPress={() => router.push("/Patient/register")}
           >
             <p>h</p>
           </IconButton>
