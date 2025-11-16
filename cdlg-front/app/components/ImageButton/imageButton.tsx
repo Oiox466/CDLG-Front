@@ -20,7 +20,6 @@ const ImageButton: React.FC<ImageButtonProps> = ({ text, onClick }) => {
         </div>
       </button>
 
-      {/* El diamante queda fuera del botón, pero dentro del fondo */}
       <div className={styles.diamond}>
         <span>♦</span>
       </div>

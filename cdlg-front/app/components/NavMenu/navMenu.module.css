@@ -1,0 +1,20 @@
+.container {
+    position: fixed;
+    top: 70px; /* debajo del navbar */
+    right: 0;
+
+    background-color: #000000;
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    width: max-content; /* se ajusta al contenido */
+    height: auto; 
+
+    z-index: 5000; /* sobre todo */
+    border-radius: 0 0 0 12px;
+
+    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+}

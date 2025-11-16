@@ -5,6 +5,7 @@ import Form from "../../components/Form/form";
 import IconButton from "../../components/IconButton/iconButton";
 import TextInput from "../../components/TextInput/textInput";
 import styles from "./login.module.css";
+import Image from "next/image";
 
 export default function Login() {
   const router = useRouter();
@@ -14,11 +15,9 @@ export default function Login() {
   return (
     <div className={styles.container}>
       <div className={styles.left}>
-        <p>*icono*</p>
-        <p>
-          Recuerda que al crear tu cuenta, se te asignará un número de seguridad
-          social al correo que proporcionaste
-        </p>
+        <Image src="/icon.svg" alt="icon" width={200} height={200} />
+        <p>CDLG</p>
+        <p>Recuerda que al crear tu cuenta, se te asignará un número de seguridad social al correo que proporcionaste</p>
       </div>
       <div className={styles.right}>
         <Form
@@ -43,14 +42,14 @@ export default function Login() {
                 text="Iniciar sesión"
                 onPress={() => router.push("/Patient/dates")}
               >
-                <p>→</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="currentColor" d="M12.268 19.313L13.5 20.5l1.233-1.178l.033-.032C19.125 15.1 22 12.336 22 8.946C22 6.176 19.943 4 17.325 4a4.8 4.8 0 0 0-2.29.597A5.1 5.1 0 0 0 13.5 5.879a5.1 5.1 0 0 0-1.535-1.282A4.8 4.8 0 0 0 9.675 4C7.057 4 5 6.176 5 8.945c0 .706.125 1.385.361 2.055H2v2h7.5l.887-1.182l1.975 3.456L14.98 12h2.52v-2h-3.48l-1.382 1.726l-2.025-3.544L8.5 11h-.967C7.16 10.256 7 9.594 7 8.945C7 7.173 8.266 6 9.675 6c.83 0 1.692.42 2.267 1.133L13.5 9.07l1.558-1.936C15.633 6.42 16.495 6 17.325 6C18.734 6 20 7.173 20 8.945c0 1.079-.441 2.195-1.575 3.662c-1.131 1.465-2.77 3.054-4.92 5.121A137 137 0 0 1 10.714 15H7.97c1.159 1.302 2.614 2.698 4.287 4.303z"/></svg>
               </IconButton>
 
               <IconButton
                 text="Crear Cuenta"
                 onPress={() => router.push("/Patient/register")}
               >
-                <p>+</p>
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24"><path fill="currentColor" d="M12.268 19.313L13.5 20.5l1.233-1.178l.033-.032C19.125 15.1 22 12.336 22 8.946C22 6.176 19.943 4 17.325 4a4.8 4.8 0 0 0-2.29.597A5.1 5.1 0 0 0 13.5 5.879a5.1 5.1 0 0 0-1.535-1.282A4.8 4.8 0 0 0 9.675 4C7.057 4 5 6.176 5 8.945c0 .706.125 1.385.361 2.055H2v2h7.5l.887-1.182l1.975 3.456L14.98 12h2.52v-2h-3.48l-1.382 1.726l-2.025-3.544L8.5 11h-.967C7.16 10.256 7 9.594 7 8.945C7 7.173 8.266 6 9.675 6c.83 0 1.692.42 2.267 1.133L13.5 9.07l1.558-1.936C15.633 6.42 16.495 6 17.325 6C18.734 6 20 7.173 20 8.945c0 1.079-.441 2.195-1.575 3.662c-1.131 1.465-2.77 3.054-4.92 5.121A137 137 0 0 1 10.714 15H7.97c1.159 1.302 2.614 2.698 4.287 4.303z"/></svg>
               </IconButton>
             </>
           }
