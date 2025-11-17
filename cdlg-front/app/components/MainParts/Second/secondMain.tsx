@@ -13,10 +13,17 @@ const SecondMain: React.FC = () => {
                     <p>Con los mejores especialistas en:</p>
                     <ul>
                         <li>Cardología</li>
-                        <li>Omeopatia</li>
+                        <li>Dermatología</li>
+                        <li>Ginecología</li>
+                        <li>Medicina General</li>
+                        <li>Nefrología</li>
+                    </ul>
+                    <ul>
                         <li>Nutriología</li>
-                        <li>Momoligia</li>
-                        <li>Gastroenterología</li>
+                        <li>Oftalmología</li>
+                        <li>Oncología</li>
+                        <li>Ortopedia</li>
+                        <li>Pediatría</li>
                     </ul>
                 </div>
             </div>

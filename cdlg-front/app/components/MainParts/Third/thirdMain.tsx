@@ -6,18 +6,8 @@ const ThirdMain: React.FC = () => {
         <div className={styles.content}>
             <nav></nav>
             <div>
-                <h1>Porque tu salud nos importa</h1>
-                
+                <h1>Contamos con Servicio de Farmacia</h1>
                 <div>
-                    <p>Atencion 24/7</p>
-                    <p>Con los mejores especialistas en:</p>
-                    <ul>
-                        <li>Cardología</li>
-                        <li>Omeopatia</li>
-                        <li>Nutriología</li>
-                        <li>Momoligia</li>
-                        <li>Gastroenterología</li>
-                    </ul>
                 </div>
             </div>
         </div>

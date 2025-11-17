@@ -45,26 +45,12 @@
 }
 
 .diamond {
-    height: 25px;
-    aspect-ratio: 1 / 1;
-    border: 1px solid #d0d0d0;
-    transform: rotate(45deg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 12px;
+    margin-right: 5px;
     transition: transform 0.3s ease-in-out;
 }
 
-.diamond > span {
-    transform: rotate(-45deg);
-    font-size: 0.8em;
-    color: white;
-}
-
 .activeDiamond {
-    transform: rotate(225deg);
-    border-color: white;
+    transform: rotate(-90deg);
 }
 
 .stepText {
@@ -72,3 +58,23 @@
     color: #d0d0d0;
     margin: 0;
 }
+
+.titleContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* gap: 5px; */
+    /* margin-bottom: 10px; */
+}
+
+.titleIcon {
+    display: block;
+}
+
+.title {
+    font-size: 32px;
+    /* color: #ffffff; */
+    /* margin: 0; */
+}
+
+/* El resto permanece igual */

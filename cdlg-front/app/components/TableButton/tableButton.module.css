@@ -16,7 +16,7 @@
 
 /* Diamante posicionado en esquina inferior izquierda */
 .diamond {
-  height: 25px;
+  height: 30px;
   aspect-ratio: 1 / 1;
   border: var(--th) solid #d0d0d0;
   transform: rotate(45deg);

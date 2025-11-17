@@ -41,7 +41,9 @@ const NavBar = ({ links = [], opaque = false }: NavBarProps) => {
                 </div>
             </nav>
 
-            {menuOpen && <NavMenu buttons={<TableButton text="Oncología" onClick={()=>{console.log("")}} />} />}
+            {menuOpen && <NavMenu buttons={
+                <TableButton text="Oncología" onClick={()=>{console.log("")}} ></TableButton>
+                } />}
         </>
     );
 };
