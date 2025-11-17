@@ -1,0 +1,24 @@
+:root {
+    --cut: 30px;
+    --cut-bottom: 15px;
+    --a: 15px;
+    --th: 2px;
+}
+
+.diamond {
+    width: 38px;
+    height: 38px;
+    border:var(--th) solid #D0D0D0;
+    transform: rotate(45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    z-index: 10;
+
+}
+
+.diamond > * {
+    transform: rotate(-45deg);
+    color: rgb(255, 255, 255);
+}

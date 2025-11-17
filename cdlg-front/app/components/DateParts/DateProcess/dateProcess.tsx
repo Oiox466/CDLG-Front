@@ -13,22 +13,69 @@ interface Props {
 const DateProcess: React.FC<Props> = ({ onStepChange }) => {
   const [step, setStep] = useState(0);
 
+  const [speciality, setSpeciality] = useState("");
+  const [doctor, setDoctor] = useState("");
+  const [day, setDay] = useState("");
+  const [hour, setHour] = useState("");
+
   const nextStep = () => {
     setStep((prev) => Math.min(prev + 1, 4));
   };
 
-  // 🟢 Notificar cuando el step cambie
   useEffect(() => {
     onStepChange(step);
   }, [step, onStepChange]);
 
   return (
     <div className="container">
-      {step === 0 && <Speciality onNext={nextStep} />}
-      {step === 1 && <Doctors onNext={nextStep} />}
-      {step === 2 && <Day onNext={nextStep} />}
-      {step === 3 && <Hour onNext={nextStep} />}
-      {step === 4 && <Payment />}
+      {step === 0 && (
+        <Speciality
+          onNext={(value: string) => {
+            setSpeciality(value);
+            nextStep();
+          }}
+        />
+      )}
+
+      {step === 1 && (
+        <Doctors
+          speciality={speciality}
+          onNext={(value: string) => {
+            setDoctor(value);
+            nextStep();
+          }}
+        />
+      )}
+
+      {step === 2 && (
+        <Day
+          onNext={(value: string) => {
+            setDay(value.toString());
+            nextStep();
+          }}
+        />
+      )}
+
+      {step === 3 && (
+        <Hour
+          doctor={doctor}
+          day={day}
+          onNext={(value: string) => {
+            setHour(value);
+            nextStep();
+          }}
+        />
+      )}
+
+      {step === 4 && (
+        <Payment
+          speciality={speciality}
+          doctor={doctor}
+          day={day}
+          hour={hour}
+          onNext={() => console.log("Ir a citas próximas")}
+        />
+      )}
     </div>
   );
 };

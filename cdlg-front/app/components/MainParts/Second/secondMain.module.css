@@ -1,3 +1,74 @@
+.container {
+  position: relative;
+  padding: 16px;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid #d0d0d0;
+  pointer-events: none;
+
+  mask-image:
+    radial-gradient(circle at top right, transparent 0 30px, black 30px),
+    radial-gradient(circle at bottom left, transparent 0 30px, black 30px);
+  mask-composite: intersect;
+  -webkit-mask-image:
+    radial-gradient(circle at top right, transparent 0 30px, black 30px),
+    radial-gradient(circle at bottom left, transparent 0 30px, black 30px);
+  -webkit-mask-composite: source-in;
+}
+
+.secondContainer {
+  position: relative;
+  padding: 2em ;
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
+}
+
+.secondContainer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid #d0d0d0;
+  pointer-events: none;
+  mask-image:
+    radial-gradient(circle at top right, transparent 0 36px, black 36px),
+    radial-gradient(circle at bottom left, transparent 0 36px, black 36px);
+  mask-composite: intersect;
+  -webkit-mask-image:
+    radial-gradient(circle at top right, transparent 0 36px, black 36px),
+    radial-gradient(circle at bottom left, transparent 0 36px, black 36px);
+  -webkit-mask-composite: source-in;
+}
+
+.titleContainer {
+  display: inline-block;
+  padding: 1rem;
+  border: 2px solid #d0d0d0;
+  transform: skewX(-20deg); /* romboide */
+  margin-bottom: 2rem;
+}
+
+.titleContainer h1 {
+  transform: skewX(20deg); /* revertir texto */
+  margin: 0;
+  font-size: 2em;
+}
+
+.topRow {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.topRow p {
+    margin: 0;
+    font-size: 1.2em;
+}
+
 .content {
     display: flex;
     flex-direction: column;
@@ -20,15 +91,13 @@
     margin: 0.5rem 0;
 }
 
-.content ul {
-    list-style-type: disc;
-    padding-left: 1.5rem;
-    margin-top: 1rem;
-    text-align: left;
-    display: inline-block;
+.secondContainer td {
+  display: flex;             /* permite alinear ícono y texto juntos */
+  align-items: center;       /* centra verticalmente el ícono y texto */
+  gap: 0.5rem;               /* espacio entre ícono y texto */
+  padding: 4px 8px;
 }
 
-.content ul li {
-    margin: 0.3rem 0;
-    font-size: 1.1em;
+.secondContainer td p {
+  margin: 0;
 }
