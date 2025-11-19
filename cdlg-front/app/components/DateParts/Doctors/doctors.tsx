@@ -1,51 +1,80 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import ImageButton from "../../ImageButton/imageButton";
 import styles from "./doctors.module.css";
 
 interface Props {
-  speciality: string;           // si necesitas mostrar la especialidad
-  onNext: (doctor: string) => void;     // enviar doctor hacia DateProcess
+  specialityId: number;
+  onNext: (doctor: { name: string; id: string }) => void;
 }
 
-const Doctors = ({ speciality, onNext }: Props) => {
+interface Doctor {
+  id_contrato: string;
+  nombre_comp: string;
+}
 
-  const handleSelect = (name: string) => {
-    onNext(name);  // enviar a DateProcess
+const Doctors = ({ specialityId, onNext }: Props) => {
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/citas/especialidades/${specialityId}/doctores`
+        );
+        const result = await res.json();
+
+        console.log("BACKEND:", result);
+
+        // Aseguramos que docs exista y sea array
+        if (Array.isArray(result.docs)) {
+          setDoctors(result.docs);
+        } else {
+          setDoctors([]);
+        }
+      } catch (error) {
+        console.error("Error fetching doctors:", error);
+        setDoctors([]);
+      }
+    };
+
+    fetchDoctors();
+  }, [specialityId]);
+
+  const handleSelect = (name: string, id: string) => {
+    onNext({ name, id }); // Enviar info al DateProcess
   };
 
   return (
     <div className={styles.container}>
-
       <table className={styles.table}>
         <tbody>
-          <tr>
-            <td className={styles.cell}>
-              <ImageButton
-                text="Dr. García"
-                onClick={() => handleSelect("Dr. García")}
-              />
-            </td>
+          {Array.isArray(doctors) &&
+            doctors.map((doc, index) =>
+              index % 4 === 0 ? (
+                <tr key={index}>
+                  {doctors.slice(index, index + 4).map((subDoc) => (
+                    <td key={subDoc.id_contrato} className={styles.cell}>
+                      <ImageButton
+                        text={subDoc.nombre_comp}
+                        onClick={() =>
+                          handleSelect(subDoc.nombre_comp, subDoc.id_contrato)
+                        }
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ) : null
+            )}
 
-            <td className={styles.cell}>
-              <ImageButton
-                text="Dra. López"
-                onClick={() => handleSelect("Dra. López")}
-              />
-            </td>
-
-            <td className={styles.cell}>
-              <ImageButton
-                text="Dr. Hernández"
-                onClick={() => handleSelect("Dr. Hernández")}
-              />
-            </td>
-
-            <td className={styles.cell}>
-              <ImageButton
-                text="Dra. Torres"
-                onClick={() => handleSelect("Dra. Torres")}
-              />
-            </td>
-          </tr>
+          {doctors.length === 0 && (
+            <tr>
+              <td colSpan={4} className={styles.cell}>
+                No hay doctores registrados para esta especialidad
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>

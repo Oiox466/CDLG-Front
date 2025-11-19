@@ -1,52 +1,88 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Styles from "./hour.module.css";
 
 type HourProps = {
-    doctor: string;
-    day: string;
-    onNext: (hour: string) => void;
+  doctorId: string;
+  idEspecialidad: number;
+  day: string;
+  onNext: (hour: string) => void;
 };
 
-const Hour = ({ doctor, day, onNext }: HourProps) => {
-    const [selectedHour, setSelectedHour] = useState("");
+const Hour = ({ doctorId, idEspecialidad, day, onNext }: HourProps) => {
+  const [hour, setHour] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    const handleHourClick = (hour: string) => {
-        setSelectedHour(hour);
-        onNext(hour);
+  useEffect(() => {
+    const fetchHour = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/citas/disponibilidad/resumen?id_contrato=${doctorId}&id_especialidad=${idEspecialidad}`
+        );
+
+        const result = await res.json();
+        console.log("BACKEND RESUMEN:", result);
+
+        if (!Array.isArray(result) || result.length === 0) {
+          setHour(null);
+          setLoading(false);
+          return;
+        }
+
+        // Tomamos el primer registro válido
+        const disponibilidad = result[0];
+
+        if (!disponibilidad?.horario_inicio) {
+          setHour(null);
+          setLoading(false);
+          return;
+        }
+
+        // Extraer parte después de 'T'
+        const rawTime = disponibilidad.horario_inicio.split("T")[1]; // "15:00:00.000Z"
+
+        // Convertir a formato legible HH:MM AM/PM
+        const readableTime = new Date(disponibilidad.horario_inicio).toLocaleTimeString("es-MX", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        setHour(readableTime);
+
+      } catch (error) {
+        console.error("Error fetching hour:", error);
+        setHour(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    return (
-        <div className={Styles.container}>
-            <h2>Fecha y hora</h2>
+    fetchHour();
+  }, [doctorId, idEspecialidad, day]);
 
-            <p>{day} Horarios disponibles</p>
+  const handleClick = () => {
+    if (hour) onNext(hour);
+  };
 
-            <table className={Styles.table}>
-                <tbody>
-                    <tr>
-                        <td><button className={Styles.hourButton} onClick={() => handleHourClick("9:00 AM")}>9:00 AM</button></td>
-                        <td><button className={Styles.hourButton} onClick={() => handleHourClick("10:00 AM")}>10:00 AM</button></td>
-                    </tr>
-                    <tr>
-                        <td><button className={Styles.hourButton} onClick={() => handleHourClick("11:00 AM")}>11:00 AM</button></td>
-                        <td><button className={Styles.hourButton} onClick={() => handleHourClick("12:00 PM")}>12:00 PM</button></td>
-                    </tr>
-                    <tr>
-                        <td><button className={Styles.hourButton} onClick={() => handleHourClick("1:00 PM")}>1:00 PM</button></td>
-                        <td><button className={Styles.hourButton} onClick={() => handleHourClick("2:00 PM")}>2:00 PM</button></td>
-                    </tr>
-                    <tr>
-                        <td><button className={Styles.hourButton} onClick={() => handleHourClick("3:00 PM")}>3:00 PM</button></td>
-                        <td><button className={Styles.hourButton} onClick={() => handleHourClick("4:00 PM")}>4:00 PM</button></td>
-                    </tr>
-                </tbody>
-            </table>
+  return (
+    <div className={Styles.container}>
+      <h2>Seleccione su horario</h2>
+      <p>{day}</p>
 
-            <p>*Recuerde presentarse 10 minutos antes</p>
-        </div>
-    );
+      {loading ? (
+        <p>Cargando horario...</p>
+      ) : hour ? (
+        <button className={Styles.hourButton} onClick={handleClick}>
+          {hour}
+        </button>
+      ) : (
+        <p>No hay horarios disponibles</p>
+      )}
+
+      <p>*Recuerde presentarse 10 minutos antes</p>
+    </div>
+  );
 };
 
 export default Hour;

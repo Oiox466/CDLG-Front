@@ -43,7 +43,7 @@ const NavBar = ({ links = [], opaque = false }: NavBarProps) => {
                 </div>
             </nav>
 
-            {menuOpen && (
+            {/* {menuOpen && (
                 <NavMenu
                     buttons={
                         <>
@@ -52,7 +52,7 @@ const NavBar = ({ links = [], opaque = false }: NavBarProps) => {
                         </>
                     }
                 />
-            )}
+            )} */}
         </>
     );
 };

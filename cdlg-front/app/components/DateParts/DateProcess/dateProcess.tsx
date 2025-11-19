@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import Doctors from "../Doctors/doctors";
 import Speciality from "../Speciality/speciality";
@@ -13,14 +14,12 @@ interface Props {
 const DateProcess: React.FC<Props> = ({ onStepChange }) => {
   const [step, setStep] = useState(0);
 
-  const [speciality, setSpeciality] = useState("");
-  const [doctor, setDoctor] = useState("");
+  const [speciality, setSpeciality] = useState<{ id: number; name: string; cost: number } | null>(null);
+  const [doctor, setDoctor] = useState<{ name: string; id: string } | null>(null);
   const [day, setDay] = useState("");
   const [hour, setHour] = useState("");
 
-  const nextStep = () => {
-    setStep((prev) => Math.min(prev + 1, 4));
-  };
+  const nextStep = () => setStep((prev) => Math.min(prev + 1, 4));
 
   useEffect(() => {
     onStepChange(step);
@@ -30,47 +29,51 @@ const DateProcess: React.FC<Props> = ({ onStepChange }) => {
     <div className="container">
       {step === 0 && (
         <Speciality
-          onNext={(value: string) => {
+          onNext={(value) => {
             setSpeciality(value);
             nextStep();
           }}
         />
       )}
 
-      {step === 1 && (
+      {step === 1 && speciality && (
         <Doctors
-          speciality={speciality}
-          onNext={(value: string) => {
-            setDoctor(value);
+          specialityId={speciality.id}
+          onNext={(value) => {
+            setDoctor(value); // ahora guarda id y nombre
             nextStep();
           }}
         />
       )}
 
-      {step === 2 && (
+      {step === 2 && doctor && speciality && (
         <Day
-          onNext={(value: string) => {
-            setDay(value.toString());
+          idContrato={doctor.id}
+          idEspecialidad={speciality.id}
+          onNext={(value) => {
+            setDay(value);
             nextStep();
           }}
         />
       )}
 
-      {step === 3 && (
+      {step === 3 && doctor && speciality && (
         <Hour
-          doctor={doctor}
+          idEspecialidad={speciality.id}
+          doctorId={doctor.id}
           day={day}
-          onNext={(value: string) => {
+          onNext={(value) => {
             setHour(value);
             nextStep();
           }}
         />
       )}
 
-      {step === 4 && (
+      {step === 4 && speciality && doctor && (
         <Payment
-          speciality={speciality}
-          doctor={doctor}
+          speciality={speciality.name}
+          cost={speciality.cost}
+          doctor={doctor.name}
           day={day}
           hour={hour}
           onNext={() => console.log("Ir a citas próximas")}

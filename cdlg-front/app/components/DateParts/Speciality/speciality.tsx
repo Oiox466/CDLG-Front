@@ -1,78 +1,58 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import TableButton from "../../TableButton/tableButton";
 import styles from "./speciality.module.css";
 import * as Icons from "../../Icons/Icons";
 
 interface Props {
-  onNext: (value: string) => void;
+  onNext: (value: { id: number; name: string; cost: number }) => void;
 }
 
 const Speciality = ({ onNext }: Props) => {
-  const handleSelect = (value: string) => {
-    onNext(value);   // pasar valor al DateProcess
+  const [specialities, setSpecialities] = useState<
+    { id_especialidad: number; costo_atencion: number; nom_especialidad: string }[]
+  >([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch("http://localhost:5000/citas/especialidades");
+      const data = await res.json();
+      setSpecialities(data);
+    };
+    fetchData();
+  }, []);
+
+  const handleSelect = (id: number, name: string, cost: number) => {
+    onNext({ id, name, cost });
   };
 
   return (
     <div className={styles.container}>
       <table className={styles.table}>
         <tbody>
-          <tr>
-            <td className={styles.cell}>
-              <TableButton text="Cardiología" onClick={() => handleSelect("Cardiología")}>
-                <Icons.CardiologyIcon/>
-              </TableButton>
-            </td>
-            <td className={styles.cell}>
-              <TableButton text="Dermatología" onClick={() => handleSelect("Dermatología")}>
-                <Icons.DermatologyIcon/>
-              </TableButton>
-            </td>
-            <td className={styles.cell}>
-              <TableButton text="Ginecología" onClick={() => handleSelect("Ginecología")}>
-                <Icons.GynecologyIcon/>
-              </TableButton>
-            </td>
-            <td className={styles.cell}>
-              <TableButton text="Medicina General" onClick={() => handleSelect("Medicina General")}>
-                <Icons.GeneralMedicineIcon/>
-              </TableButton>
-            </td>
-          </tr>
-
-          <tr>
-            <td className={styles.cell}>
-              <TableButton text="Nefrología" onClick={() => handleSelect("Nefrología")}>
-                <Icons.NephrologyIcon/>
-              </TableButton>
-            </td>
-            <td className={styles.cell}>
-              <TableButton text="Nutriología" onClick={() => handleSelect("Nutriología")}>
-                <Icons.NutritionIcon/>
-              </TableButton>
-            </td>
-            <td className={styles.cell}>
-              <TableButton text="Oftalmología" onClick={() => handleSelect("Oftalmología")}>
-                <Icons.OphthalmologyIcon/>
-              </TableButton>
-            </td>
-            <td className={styles.cell}>
-              <TableButton text="Oncología" onClick={() => handleSelect("Oncología")}>
-                <Icons.OncologyIcon/>
-              </TableButton>
-            </td>
-          </tr>
-
-          <tr>
-            <td className={styles.cell}>
-              <TableButton text="Ortopedia" onClick={() => handleSelect("Ortopedia")}>
-                <Icons.OrthopedicsIcon/>
-              </TableButton>
-            </td>
-            <td className={styles.cell}>
-              <TableButton text="Pediatría" onClick={() => handleSelect("Pediatría")}>
-                <Icons.PediatricsIcon/>
-              </TableButton>
-            </td>
-          </tr>
+          {specialities.map((item, index) =>
+            index % 4 === 0 ? (
+              <tr key={index}>
+                {specialities.slice(index, index + 4).map((subItem) => (
+                  <td key={subItem.id_especialidad} className={styles.cell}>
+                    <TableButton
+                      text={subItem.nom_especialidad}
+                      onClick={() =>
+                        handleSelect(
+                          subItem.id_especialidad,
+                          subItem.nom_especialidad,
+                          subItem.costo_atencion
+                        )
+                      }
+                    >
+                      {Icons.CardiologyIcon && <Icons.CardiologyIcon />} {/* icono temporal */}
+                    </TableButton>
+                  </td>
+                ))}
+              </tr>
+            ) : null
+          )}
         </tbody>
       </table>
     </div>
