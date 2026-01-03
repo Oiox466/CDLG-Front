@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Styles from "./payment.module.css";
+import Cookies from 'js-cookie';
 
 type PaymentProps = {
   speciality: string;
@@ -31,7 +32,8 @@ const Payment = ({ speciality, doctor, doctorId, day, hour, cost, onNext }: Paym
       const response = await fetch("http://localhost:5000/citas/agendar", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization":`Bearer ${Cookies.get("token")}` 
         },
         body: JSON.stringify(body),
       });
