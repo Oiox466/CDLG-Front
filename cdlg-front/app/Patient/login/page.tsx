@@ -18,7 +18,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://localhost:5000/auth/login", {
+      const response = await fetch("http://localhost:7000/auth/login", {
         method: "POST",
         headers: { 
           "Content-Type": "application/json"
@@ -44,7 +44,7 @@ export default function Login() {
 
       console.log("TOKEN GUARDADO EN COOKIE:", Cookies.get("token"));
 
-      router.push("/Patient/dates");
+      router.push("/Patient/home");
 
     } catch (error) {
       console.error("Error en login:", error);

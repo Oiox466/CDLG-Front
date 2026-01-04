@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import TableButton from "../../TableButton/tableButton";
 import styles from "./speciality.module.css";
 import * as Icons from "../../Icons/Icons";
+import Cookies from "js-cookie";
 
 interface Props {
   onNext: (value: { id: number; name: string; cost: number }) => void;
@@ -15,13 +16,36 @@ const Speciality = ({ onNext }: Props) => {
   >([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await fetch("http://localhost:5000/citas/especialidades");
-      const data = await res.json();
-      setSpecialities(data);
-    };
-    fetchData();
-  }, []);
+  const fetchData = async () => {
+    const token = Cookies.get("token");
+
+    if (!token) {
+      alert("Sesión expirada, vuelve a iniciar sesión");
+      return;
+    }
+
+    const res = await fetch(
+      "http://localhost:7000/doctores/especialidades",
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(err || "Error al cargar especialidades");
+    }
+
+    const data = await res.json();
+    setSpecialities(data);
+  };
+
+  fetchData().catch(console.error);
+}, []);
+
 
   const handleSelect = (id: number, name: string, cost: number) => {
     onNext({ id, name, cost });
@@ -38,12 +62,14 @@ const Speciality = ({ onNext }: Props) => {
                   <td key={subItem.id_especialidad} className={styles.cell}>
                     <TableButton
                       text={subItem.nom_especialidad}
-                      onClick={() =>
+                      onClick={() =>{
+                        console.log("TOKEN GUARDADO EN COOKIE:", Cookies.get("token"));
                         handleSelect(
                           subItem.id_especialidad,
                           subItem.nom_especialidad,
                           subItem.costo_atencion
                         )
+                      }
                       }
                     >
                       {Icons.CardiologyIcon && <Icons.CardiologyIcon />} {/* icono temporal */}

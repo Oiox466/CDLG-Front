@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import NavMenu from "../NavMenu/navMenu";
 import TableButton from "../TableButton/tableButton";
+import Cookies from "js-cookie"; // Import necesario para borrar token
 
 interface NavBarProps {
     links?: { label: string; href: string }[];
@@ -19,6 +20,13 @@ const NavBar = ({ links = [], opaque = false }: NavBarProps) => {
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
+    };
+
+    const handleLogout = () => {
+        // Borra el token
+        Cookies.remove("token");
+        // Redirige al login
+        router.push("/Patient/login");
     };
 
     return (
@@ -43,16 +51,19 @@ const NavBar = ({ links = [], opaque = false }: NavBarProps) => {
                 </div>
             </nav>
 
-            {/* {menuOpen && (
+            {menuOpen && (
                 <NavMenu
                     buttons={
                         <>
                             <TableButton text="Inicio" onClick={() => router.push("/Patient/home")} />
                             <TableButton text="Agendar Cita Nueva" onClick={() => router.push("/Patient/dates")} />
+                            <TableButton text="Perfil" onClick={() => router.push("/Patient/profile")} />
+                            {/* Botón de cerrar sesión */}
+                            <TableButton text="Cerrar sesión" onClick={handleLogout} />
                         </>
                     }
                 />
-            )} */}
+            )}
         </>
     );
 };

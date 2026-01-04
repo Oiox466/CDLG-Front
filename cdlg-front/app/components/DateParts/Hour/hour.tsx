@@ -1,84 +1,143 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Styles from "./hour.module.css";
+import Cookies from "js-cookie";
+
+/* =======================
+   TIPOS
+======================= */
 
 type HourProps = {
-  doctorId: string;
-  idEspecialidad: number;
-  day: string;
+  doctorId: string;   // id_contrato
+  fecha: string;      // "2026-01-08"
+  no_consultorio: number;
+
   onNext: (hour: string) => void;
 };
 
-const Hour = ({ doctorId, idEspecialidad, day, onNext }: HourProps) => {
-  const [hour, setHour] = useState<string | null>(null);
+interface HorarioDisponible {
+  id_contrato: string;
+  id_horario_comp_contrato: number;
+  id_horario: number;
+  fecha: string;
+  fechaHora_inicio: string;
+  fechaHora_fin: string;
+}
+
+/* =======================
+   COMPONENTE
+======================= */
+
+const Hour = ({ doctorId, fecha, onNext }: HourProps) => {
+  const [hours, setHours] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedHour, setSelectedHour] = useState<string | null>(null);
+
+  /* =======================
+     FETCH HORAS DEL DÍA
+  ======================= */
 
   useEffect(() => {
-    const fetchHour = async () => {
+    const fetchHours = async () => {
       try {
+        setLoading(true);
+        setHours([]);
+
+        const token = Cookies.get("token");
+
         const res = await fetch(
-          `http://localhost:5000/citas/disponibilidad/resumen?id_contrato=${doctorId}&id_especialidad=${idEspecialidad}`
+          "http://localhost:7000/doctores/disponibilidad/resumen/dias",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              id_contrato: doctorId,
+              fecha: `${fecha}T07:00:00.000Z`,
+            }),
+          }
         );
 
-        const result = await res.json();
-        console.log("BACKEND RESUMEN:", result);
+        const data: HorarioDisponible[] = await res.json();
+        console.log("HORARIOS BACKEND:", data);
 
-        if (!Array.isArray(result) || result.length === 0) {
-          setHour(null);
+        if (!Array.isArray(data) || data.length === 0) {
           setLoading(false);
           return;
         }
 
-        // Tomamos el primer registro válido
-        const disponibilidad = result[0];
+        const slots: string[] = [];
 
-        if (!disponibilidad?.horario_inicio) {
-          setHour(null);
-          setLoading(false);
-          return;
-        }
+        data.forEach((h) => {
+          const start = new Date(h.fechaHora_inicio);
+          const end = new Date(h.fechaHora_fin);
 
-        // Extraer parte después de 'T'
-        const rawTime = disponibilidad.horario_inicio.split("T")[1]; // "15:00:00.000Z"
+          const current = new Date(start);
 
-        // Convertir a formato legible HH:MM AM/PM
-        const readableTime = new Date(disponibilidad.horario_inicio).toLocaleTimeString("es-MX", {
-          hour: "2-digit",
-          minute: "2-digit",
+          while (current < end) {
+            slots.push(
+              current.toLocaleTimeString("es-MX", {
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              })
+            );
+
+            current.setHours(current.getHours() + 1);
+          }
         });
 
-        setHour(readableTime);
-
+        setHours(slots);
       } catch (error) {
-        console.error("Error fetching hour:", error);
-        setHour(null);
+        console.error("Error fetching hours:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchHour();
-  }, [doctorId, idEspecialidad, day]);
+    fetchHours();
+  }, [doctorId, fecha]);
 
-  const handleClick = () => {
-    if (hour) onNext(hour);
+  /* =======================
+     HANDLERS
+  ======================= */
+
+  const handleSelect = (hour: string) => {
+    setSelectedHour(hour);
+    onNext(hour);
   };
+
+  /* =======================
+     RENDER
+  ======================= */
 
   return (
     <div className={Styles.container}>
       <h2>Seleccione su horario</h2>
-      <p>{day}</p>
+      <p>{fecha}</p>
 
-      {loading ? (
-        <p>Cargando horario...</p>
-      ) : hour ? (
-        <button className={Styles.hourButton} onClick={handleClick}>
-          {hour}
-        </button>
-      ) : (
+      {loading && <p>Cargando horarios...</p>}
+
+      {!loading && hours.length === 0 && (
         <p>No hay horarios disponibles</p>
       )}
+
+      <div className={Styles.hoursGrid}>
+        {hours.map((hour) => (
+          <button
+            key={hour}
+            className={`${Styles.hourButton} ${
+              selectedHour === hour ? Styles.selected : ""
+            }`}
+            onClick={() => handleSelect(hour)}
+          >
+            {hour}
+          </button>
+        ))}
+      </div>
 
       <p>*Recuerde presentarse 10 minutos antes</p>
     </div>

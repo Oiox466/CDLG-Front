@@ -5,6 +5,7 @@ import DateProcess from "../../components/DateParts/DateProcess/dateProcess";
 import styles from "./dates.module.css";
 import React, { useState } from "react";
 import Image from "next/image";
+import Cookies from "js-cookie";
 
 const Dates = () => {
     const [currentStep, setCurrentStep] = useState(0);
