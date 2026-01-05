@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Speciality from "../Speciality/speciality";
 import Doctors from "../Doctors/doctors";
 import Day from "../Day/day";
@@ -20,7 +20,12 @@ interface SelectedDoctor {
   no_consultorio: number;
 }
 
-const DateProcess = () => {
+interface DateProcessProps {
+  onStepChange?: (step: number) => void;
+  nss: string | null; // ⚡ Recibimos el NSS del paciente
+}
+
+const DateProcess = ({ onStepChange, nss }: DateProcessProps) => {
   const [step, setStep] = useState(0);
 
   const [speciality, setSpeciality] = useState<SelectedSpeciality | null>(null);
@@ -28,7 +33,10 @@ const DateProcess = () => {
   const [day, setDay] = useState<{ fecha: string; total_horas: number } | null>(null);
   const [hour, setHour] = useState<string | null>(null);
 
-  const nextStep = () => setStep((prev) => prev + 1);
+  const nextStep = () => {
+    setStep((prev) => prev + 1);
+    if (onStepChange) onStepChange(step + 1);
+  };
 
   return (
     <div>
@@ -80,17 +88,18 @@ const DateProcess = () => {
       )}
 
       {/* ===== PASO 4: PAGO ===== */}
-      {step === 4 && speciality && doctor && day && hour && (
-              <Payment
-        speciality={speciality.name}
-        cost={speciality.cost}
-        doctor={doctor.nombre}
-        doctorId={doctor.id_contrato}
-        no_consultorio={doctor.no_consultorio} // ⚠ aquí es distinto al prop Payment
-        day={day.fecha}
-        hour={hour}
-      />
-
+      {step === 4 && speciality && doctor && day && hour && nss && (
+        <Payment
+          speciality={speciality.name}
+          cost={speciality.cost}
+          doctor={doctor.nombre}
+          doctorId={doctor.id_contrato}
+          no_consultorio={doctor.no_consultorio}
+          day={day.fecha}
+          hour={hour}
+          nss={nss}  // ⚡ Pasamos NSS al Payment
+          onNext={nextStep} 
+        />
       )}
     </div>
   );

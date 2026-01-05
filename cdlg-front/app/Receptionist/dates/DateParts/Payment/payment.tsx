@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Styles from "./payment.module.css";
 import Cookies from "js-cookie";
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
 /* =======================
    TIPADO DEL TOKEN
@@ -24,6 +24,7 @@ type PaymentProps = {
   day: string;             // "2026-01-08"
   hour: string;            // "15:00"
   cost: number;
+  nss: string;             // ⚡ NUEVO: NSS del paciente
   onNext: () => void;
 };
 
@@ -35,6 +36,7 @@ const Payment = ({
   day,
   hour,
   cost,
+  nss,
   onNext,
 }: PaymentProps) => {
   const [agreed, setAgreed] = useState(false);
@@ -55,12 +57,8 @@ const Payment = ({
   const decodedToken = jwtDecode<DecodedToken>(token);
 
   console.log("TOKEN DECODIFICADO:", decodedToken);
-  console.log("TIPO DE USUARIO:", decodedToken.tipo_usuario);
-  console.log("ID USUARIO:", decodedToken.sub);
 
-  const id_paciente = decodedToken.sub;
-
-  // Construye el payload
+  // Construye el payload para enviar al backend
   const buildPayload = () => {
     const fechaISO = new Date(`${day}T${hour}:00`).toISOString();
 
@@ -68,7 +66,7 @@ const Payment = ({
       id_contrato: Number(doctorId),
       fecha: fechaISO,
       no_consultorio,
-      id_paciente,
+      nss, // ⚡ enviamos el NSS del paciente
     };
   };
 
@@ -82,7 +80,7 @@ const Payment = ({
 
     try {
       const response = await fetch(
-        "http://localhost:7000/citas/agendar-cita",
+        "http://localhost:7000/citas/agendarle-cita",
         {
           method: "POST",
           headers: {
@@ -100,7 +98,7 @@ const Payment = ({
         return;
       }
 
-      // PDF
+      // Generar PDF
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
 

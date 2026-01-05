@@ -6,8 +6,6 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
-import { useSearchParams } from "next/navigation";
-
 
 /* =========================
    TIPOS (SEGÚN JSON REAL)
@@ -35,8 +33,6 @@ interface Paciente {
 
 const Patients = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const nss = searchParams.get("nss"); // ⚡ Esto es el NSS del paciente
 
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
   const [loading, setLoading] = useState(true);
@@ -177,7 +173,7 @@ const Patients = () => {
                         className={styles.detailButton}
                         onClick={() => {
                           console.log("AGENDAR CITA PARA:", paciente);
-                          router.push(`/Receptionist/dates?nss=${paciente.numero_seguridad_social}`)
+                          // router.push(`/appointments/new?nss=${paciente.numero_seguridad_social}`)
                         }}
                       >
                         Agendar cita

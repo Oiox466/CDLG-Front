@@ -1,9 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
 import NavBar from "@/app/components/NavBar/navBar";
 import styles from "./datailsDate.module.css";
 
@@ -42,7 +41,6 @@ const DetailDate = () => {
   const [paying, setPaying] = useState(false);
 
   useEffect(() => {
-    console.log("Folio recibido:", folio);
     if (!folio) {
       alert("No se recibió folio de cita");
       router.push("/Patient/home");
@@ -51,8 +49,6 @@ const DetailDate = () => {
 
     const fetchCita = async () => {
       const token = Cookies.get("token");
-      console.log("Token obtenido:", token);
-
       if (!token) {
         alert("Debes iniciar sesión");
         router.push("/Patient/login");
@@ -65,24 +61,18 @@ const DetailDate = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        console.log("Respuesta fetch cita:", res);
-
         if (!res.ok) {
           const text = await res.text();
           throw new Error(text || "Error al obtener la cita");
         }
 
         const data = await res.json();
-        console.log("Datos recibidos de la cita:", data);
-
         if (data.citas && data.citas.length > 0) {
           setCita(data.citas[0]);
-          console.log("Cita seteada:", data.citas[0]);
         } else {
           setError("Cita no encontrada");
         }
       } catch (err) {
-        console.error("Error fetch cita:", err);
         setError(err instanceof Error ? err.message : "Error desconocido");
       } finally {
         setLoading(false);
@@ -113,13 +103,10 @@ const DetailDate = () => {
 
   const handleCancel = async () => {
     if (!cita) return;
-    const confirmCancel = window.confirm("¿Deseas cancelar esta cita?");
-    if (!confirmCancel) return;
+    if (!window.confirm("¿Deseas cancelar esta cita?")) return;
 
     setCancelling(true);
     const token = Cookies.get("token");
-    console.log("Token para cancelar:", token);
-
     if (!token) {
       alert("Debes iniciar sesión");
       router.push("/Patient/login");
@@ -127,57 +114,32 @@ const DetailDate = () => {
     }
 
     try {
-      // Obtener NSS del paciente
       const profileRes = await fetch("http://localhost:7000/auth/profile", {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("Respuesta fetch perfil:", profileRes);
-
-      if (!profileRes.ok) {
-        const text = await profileRes.text();
-        throw new Error(text || "Error al obtener perfil del paciente");
-      }
-
+      if (!profileRes.ok) throw new Error(await profileRes.text());
       const profileData = await profileRes.json();
-      console.log("Datos recibidos del perfil:", profileData);
-
       const numero_seguridad_social = Number(profileData[0]?.numero_seguridad_social);
-      console.log("NSS obtenido:", numero_seguridad_social);
-
       if (!numero_seguridad_social) throw new Error("No se pudo obtener NSS del paciente");
 
-      // Cancelar cita
       const cancelBody = {
         folio_cita: Number(cita.folio_cita),
         numero_seguridad_social,
       };
-      console.log("Body para cancelar cita:", cancelBody);
 
       const cancelRes = await fetch("http://localhost:7000/citas/cancelar-cita", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(cancelBody),
       });
 
-      console.log("Respuesta cancelar cita:", cancelRes);
-
-      if (!cancelRes.ok) {
-        const text = await cancelRes.text();
-        throw new Error(text || "Error al cancelar la cita");
-      }
+      if (!cancelRes.ok) throw new Error(await cancelRes.text());
 
       alert("Cita cancelada exitosamente");
       router.push("/Patient/home");
     } catch (err) {
-      console.error("Error cancelar cita:", err);
       alert(err instanceof Error ? err.message : "Error desconocido");
     } finally {
       setCancelling(false);
@@ -188,8 +150,6 @@ const DetailDate = () => {
     if (!cita) return;
     setPaying(true);
     const token = Cookies.get("token");
-    console.log("Token para pago:", token);
-
     if (!token) {
       alert("Debes iniciar sesión");
       router.push("/Patient/login");
@@ -202,31 +162,17 @@ const DetailDate = () => {
         folio_pago: 1,
         pago: Number(cita.costo),
       };
-      console.log("Body para pago:", payBody);
 
       const res = await fetch("http://localhost:7000/pay/pay-quote", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(payBody),
       });
 
-      console.log("Respuesta del pago:", res);
-
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text || "Error al realizar el pago");
-      }
-
-      const data = await res.json();
-      console.log("Datos de respuesta del pago:", data);
-
+      if (!res.ok) throw new Error(await res.text());
       alert("Pago realizado exitosamente");
       router.push("/Patient/home");
     } catch (err) {
-      console.error("Error en el pago:", err);
       alert(err instanceof Error ? err.message : "Error desconocido");
     } finally {
       setPaying(false);
@@ -238,27 +184,55 @@ const DetailDate = () => {
       <NavBar opaque />
 
       <div className={styles.container}>
-        <h1 className={styles.title}>Detalles de la Cita</h1>
+        <h1 className={styles.header}>Detalles de la Cita</h1>
 
-        {loading && <p>Cargando cita...</p>}
-        {error && <p style={{ color: "red" }}>Error: {error}</p>}
+        {loading && <p className={styles.loading}>Cargando cita...</p>}
+        {error && <p className={styles.error}>{error}</p>}
 
         {cita && (
-          <div className={styles.details}>
-            <p><strong>Folio:</strong> {cita.folio_cita}</p>
-            <p><strong>Estado:</strong> {cita.estatus_texto}</p>
-            <p><strong>Fecha:</strong> {formatearFecha(cita.fecha_cita)}</p>
-            <p><strong>Hora:</strong> {formatearHora(cita.fecha_cita)}</p>
-            <p><strong>Doctor:</strong> {cita.doctor.nombre_completo}</p>
-            <p><strong>Especialidad:</strong> {cita.doctor.especialidad}</p>
-            <p><strong>Consultorio:</strong> {cita.consultorio.no_consultorio}</p>
-            <p><strong>Costo:</strong> ${cita.costo}</p>
-            <p><strong>Puede cancelar:</strong> {cita.puede_cancelar ? "Sí" : "No"}</p>
+          <div className={styles.section}>
+            <div className={styles.grid}>
+              <div>
+                <label>Folio</label>
+                <p>{cita.folio_cita}</p>
+              </div>
+              <div>
+                <label>Estado</label>
+                <p>{cita.estatus_texto}</p>
+              </div>
+              <div>
+                <label>Fecha</label>
+                <p>{formatearFecha(cita.fecha_cita)}</p>
+              </div>
+              <div>
+                <label>Hora</label>
+                <p>{formatearHora(cita.fecha_cita)}</p>
+              </div>
+              <div>
+                <label>Doctor</label>
+                <p>{cita.doctor.nombre_completo}</p>
+              </div>
+              <div>
+                <label>Especialidad</label>
+                <p>{cita.doctor.especialidad}</p>
+              </div>
+              <div>
+                <label>Consultorio</label>
+                <p>{cita.consultorio.no_consultorio}</p>
+              </div>
+              <div>
+                <label>Costo</label>
+                <p>${cita.costo}</p>
+              </div>
+              <div>
+                <label>Puede cancelar</label>
+                <p>{cita.puede_cancelar ? "Sí" : "No"}</p>
+              </div>
+            </div>
 
-            {/* Botón de cancelar */}
             {cita.puede_cancelar && (
               <button
-                className={styles.cancelButton}
+                className={styles.primaryButton}
                 onClick={handleCancel}
                 disabled={cancelling}
               >
@@ -266,17 +240,16 @@ const DetailDate = () => {
               </button>
             )}
 
-            {/* Botón de pagar solo si la cita está pendiente */}
             {cita.estatus === "PP" ? (
               <button
-                className={styles.payButton}
+                className={styles.primaryButton}
                 onClick={handlePay}
                 disabled={paying}
               >
                 {paying ? "Procesando pago..." : "Pagar"}
               </button>
             ) : (
-              <button className={styles.payButton} disabled>
+              <button className={styles.primaryButton} disabled>
                 Pagado
               </button>
             )}

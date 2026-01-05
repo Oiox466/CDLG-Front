@@ -43,9 +43,10 @@ const NavBar = ({ links = [], opaque = false, role = "patient" }: NavBarProps) =
             return (
                 <>
                     <TableButton text="Inicio" onClick={() => router.push("/Receptionist/home")} />
-                    <TableButton text="Registrar Empleado" onClick={() => router.push("/Receptionist/registerEmployee")} />
-                    <TableButton text="Citas del Día" onClick={() => router.push("/Receptionist/today")} />
+                    <TableButton text="Registrar Doctor" onClick={() => router.push("/Receptionist/registerEmployee")} />
+                    <TableButton text="Registrar Recepcionista" onClick={() => router.push("/Receptionist/registerRecep")} />
                     <TableButton text="Pacientes" onClick={() => router.push("/Receptionist/patients")} />
+                    <TableButton text="Farmacia" onClick={() => router.push("/Receptionist/farmacy")} />
                     <TableButton text="Cerrar sesión" onClick={handleLogout} />
                 </>
             );
