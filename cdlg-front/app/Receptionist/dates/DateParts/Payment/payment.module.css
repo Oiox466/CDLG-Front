@@ -1,0 +1,64 @@
+.container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px 30px;
+  background-color: #383838;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  text-align: center;
+}
+
+.container h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.container p {
+  font-size: 1.1rem;
+  margin: 4px 0;
+  color: #e0e0e0;
+}
+
+.container button {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 1rem;
+  margin-top: 10px;
+  transition: all 0.2s ease;
+}
+
+.container button:disabled {
+  background-color: #7a7a7a;
+  cursor: not-allowed;
+}
+
+.container button:not(:disabled) {
+  background-color: #5050ff;
+  color: #fff;
+}
+
+.container button:not(:disabled):hover {
+  background-color: #6060ff;
+  transform: translateY(-2px);
+}
+
+.container p:last-child {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: #c0c0c0;
+}
+
+/* estilo para el precio */
+.container p:nth-of-type(5) {
+  font-weight: 600;
+  color: #ffcc00;
+  margin-top: 10px;
+}

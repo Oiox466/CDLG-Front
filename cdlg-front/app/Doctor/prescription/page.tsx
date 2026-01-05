@@ -1,125 +1,150 @@
 "use client";
 
-import React from "react";
-import { useRouter } from "next/navigation";
+import NavBar from "@/app/components/NavBar/navBar";
 import styles from "./prescription.module.css";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
-interface PrescriptionProps {
-  receta: {
-    id: string;
-    fecha: string;
-    doctor: string;
-    especialidad: string;
-    medicamentos: {
-      nombre: string;
-      dosis: string;
-      frecuencia: string;
-      duracion: string;
-    }[];
-    indicacionesGenerales?: string;
-  };
+interface Paciente {
+  nombres: string;
+  apellido_paterno: string;
+  apellido_materno: string;
+  numero_seguridad_social: string;
 }
 
-const Prescription: React.FC<PrescriptionProps> = ({ receta }) => {
+interface FolioCita {
+  id_paciente?: Paciente;
+}
+
+interface Receta {
+  folio_receta: string;
+  diganostico: string;
+  observaciones: string;
+  fecha_emision: string;
+  folio_cita?: FolioCita;
+}
+
+const Prescription = () => {
   const router = useRouter();
 
-  // Dummy data
-  receta = {
-    id: "REC-001",
-    fecha: "15/01/2026",
-    doctor: "Dr. Juan Pérez López",
-    especialidad: "Cardiología",
-    medicamentos: [
-      {
-        nombre: "Losartán",
-        dosis: "50 mg",
-        frecuencia: "Cada 24 horas",
-        duracion: "30 días",
-      },
-      {
-        nombre: "Aspirina",
-        dosis: "100 mg",
-        frecuencia: "Cada 24 horas",
-        duracion: "30 días",
-      },
-    ],
-    indicacionesGenerales:
-      "Tomar los medicamentos después de los alimentos. No suspender el tratamiento sin indicación médica.",
-  };
+  const [recetas, setRecetas] = useState<Receta[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchRecetas = async () => {
+      const token = Cookies.get("token");
+
+      if (!token) {
+        alert("Debes iniciar sesión");
+        router.push("/Doctor/login");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          "http://localhost:7000/receta/mostrar-recetas",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (!response.ok) throw new Error("Error al obtener recetas");
+
+        const data: Receta[] = await response.json();
+
+        // Normalizar: filtrar recetas con paciente disponible
+        const recetasValidas = data.filter(
+          (r) => r.folio_cita?.id_paciente?.nombres && r.diganostico
+        );
+
+        if (recetasValidas.length === 0) {
+          console.log("No hay recetas válidas para mostrar");
+        } else {
+          console.log("Recetas válidas:", recetasValidas);
+        }
+
+        setRecetas(recetasValidas);
+      } catch (err) {
+        console.error(err);
+        setError("No se pudieron cargar las recetas");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecetas();
+  }, [router]);
+
+  const formatearFecha = (iso: string) =>
+    new Date(iso).toLocaleDateString("es-MX");
+
+  if (loading) {
+    return (
+      <>
+        <NavBar opaque role="doctor" />
+        <div className={styles.container}>Cargando recetas...</div>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <NavBar opaque role="doctor" />
+        <div className={styles.container} style={{ color: "red" }}>
+          {error}
+        </div>
+      </>
+    );
+  }
 
   return (
-    <div className={styles.container}>
-      {/* Encabezado */}
-      <header className={styles.header}>
-        <h1>Receta médica</h1>
-        <p>ID de receta: {receta.id}</p>
-      </header>
+    <>
+      <NavBar opaque role="doctor" />
+      <div className={styles.container}>
+        <h1 className={styles.title}>Recetas Emitidas</h1>
 
-      {/* Información general */}
-      <section className={styles.section}>
-        <h2>Información de la receta</h2>
-        <div className={styles.grid}>
-          <div>
-            <label>Fecha</label>
-            <p>{receta.fecha}</p>
-          </div>
-          <div>
-            <label>Médico</label>
-            <p>{receta.doctor}</p>
-          </div>
-          <div>
-            <label>Especialidad</label>
-            <p>{receta.especialidad}</p>
-          </div>
+        <div className={styles.tableContainer}>
+          <table>
+            <thead>
+              <tr>
+                <th>Paciente</th>
+                <th>NSS</th>
+                <th>Diagnóstico</th>
+                <th>Fecha de Emisión</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recetas.length === 0 ? (
+                <tr>
+                  <td colSpan={4} style={{ textAlign: "center" }}>
+                    No hay recetas emitidas
+                  </td>
+                </tr>
+              ) : (
+                recetas.map((receta) => (
+                  <tr key={receta.folio_receta}>
+                    <td>
+                      {receta.folio_cita?.id_paciente
+                        ? `${receta.folio_cita.id_paciente.nombres} ${receta.folio_cita.id_paciente.apellido_paterno} ${receta.folio_cita.id_paciente.apellido_materno}`
+                        : "Paciente no disponible"}
+                    </td>
+                    <td>
+                      {receta.folio_cita?.id_paciente?.numero_seguridad_social ||
+                        "-"}
+                    </td>
+                    <td>{receta.diganostico || "-"}</td>
+                    <td>{formatearFecha(receta.fecha_emision)}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-      </section>
-
-      {/* Medicamentos */}
-      <section className={styles.section}>
-        <h2>Medicamentos prescritos</h2>
-
-        {receta.medicamentos.length === 0 ? (
-          <p>No hay medicamentos registrados.</p>
-        ) : (
-          <ul className={styles.list}>
-            {receta.medicamentos.map((medicamento, index) => (
-              <li key={index} className={styles.card}>
-                <p>
-                  <strong>Medicamento:</strong> {medicamento.nombre}
-                </p>
-                <p>
-                  <strong>Dosis:</strong> {medicamento.dosis}
-                </p>
-                <p>
-                  <strong>Frecuencia:</strong> {medicamento.frecuencia}
-                </p>
-                <p>
-                  <strong>Duración:</strong> {medicamento.duracion}
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      {/* Indicaciones */}
-      {receta.indicacionesGenerales && (
-        <section className={styles.section}>
-          <h2>Indicaciones generales</h2>
-          <p>{receta.indicacionesGenerales}</p>
-        </section>
-      )}
-
-      {/* Acciones */}
-      <section className={styles.actions}>
-        <button
-          className={styles.secondaryButton}
-          onClick={() => router.back()}
-        >
-          Volver
-        </button>
-      </section>
-    </div>
+      </div>
+    </>
   );
 };
 

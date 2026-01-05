@@ -63,3 +63,15 @@
     vertical-align: middle;
     display: inline-block;
 }
+
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.filters select,
+.filters input,
+.filters button {
+  padding: 6px 10px;
+}

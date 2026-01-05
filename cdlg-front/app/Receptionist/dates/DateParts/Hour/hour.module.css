@@ -1,0 +1,56 @@
+.container {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px 30px;
+  background-color: #383838; /* fondo oscuro */
+  color: #ffffff;             /* texto claro */
+}
+
+.container h2 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #ffffff;
+}
+
+.container p {
+  font-size: 1.1rem;
+  margin: 4px 0;
+  color: #e0e0e0; /* subtítulos un poco más claros */
+}
+
+.table {
+  margin: 0 auto;
+  border-collapse: collapse;
+}
+
+.table td {
+  padding: 10px;
+}
+
+.hourButton {
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: 1px solid #7a7a7a;
+  cursor: pointer;
+  width: 140px;
+  font-size: 1rem;
+  font-weight: 500;
+  background-color: #505050;
+  color: #ffffff;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.hourButton:hover {
+  background-color: #7a7a7a;
+  transform: scale(1.05);
+}
+
+.container p:last-child {
+  font-size: 0.9rem;
+  color: #c0c0c0;
+  font-style: italic;
+}

@@ -9,6 +9,7 @@ import styles from "./login.module.css";
 import Image from "next/image";
 import { CardiologyIcon } from "@/app/components/Icons/Icons";
 import Cookies from "js-cookie";
+import {jwtDecode} from "jwt-decode";  // 🔹 Asegúrate de importar así
 
 export default function Login() {
   const router = useRouter();
@@ -30,6 +31,7 @@ export default function Login() {
       });
 
       console.log("STATUS:", response.status);
+      console.log("RESPONSE OBJ:", response);
 
       const data = await response.json();
       console.log("RESPUESTA DEL BACKEND:", data);
@@ -41,10 +43,20 @@ export default function Login() {
 
       // Guardar token en cookies
       Cookies.set("token", data.token, { expires: 1 });  // expira en 1 día
-
       console.log("TOKEN GUARDADO EN COOKIE:", Cookies.get("token"));
 
-      router.push("/Patient/home");
+      // 🔹 Decodificar token para ver tipo de usuario
+      const decodedToken = jwtDecode(data.token);
+      console.log("TOKEN DECODIFICADO:", decodedToken);
+
+      const tipoUsuario = decodedToken.tipo_usuario;
+      console.log("TIPO DE USUARIO:", tipoUsuario);
+      console.log("Id", decodedToken.sub)
+
+      // Ejemplo: redirigir según tipo de usuario
+      if (tipoUsuario === 0) router.push("/Patient/home");
+      else if (tipoUsuario === 1) router.push("/Doctor/homeDoctor");
+      else router.push("/Receptionist/home");
 
     } catch (error) {
       console.error("Error en login:", error);

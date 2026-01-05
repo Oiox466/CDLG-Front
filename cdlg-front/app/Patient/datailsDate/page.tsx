@@ -199,7 +199,7 @@ const DetailDate = () => {
     try {
       const payBody = {
         folio_cita: Number(cita.folio_cita),
-        folio_pago: 0,
+        folio_pago: 1,
         pago: Number(cita.costo),
       };
       console.log("Body para pago:", payBody);

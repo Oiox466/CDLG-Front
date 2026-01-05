@@ -2,7 +2,7 @@
 
 import NavBar from "@/app/components/NavBar/navBar";
 import styles from "./home.module.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import { CardiologyIcon } from "@/app/components/Icons/Icons";
 import Cookies from "js-cookie";
@@ -52,6 +52,10 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // 🔎 filtros
+  const [filtroEstatus, setFiltroEstatus] = useState("todos");
+  const [filtroFecha, setFiltroFecha] = useState("");
+
   useEffect(() => {
     const fetchCitas = async () => {
       const token = Cookies.get("token");
@@ -94,6 +98,15 @@ const Home = () => {
     fetchCitas();
   }, [router]);
 
+  // 🟢 normaliza a YYYY-MM-DD LOCAL
+  const fechaLocalISO = (iso: string) => {
+    const d = new Date(iso);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  };
+
   const formatearFecha = (fechaISO: string) => {
     const fecha = new Date(fechaISO);
     return fecha.toLocaleDateString("es-MX", {
@@ -104,20 +117,26 @@ const Home = () => {
   };
 
   const formatearHora = (fechaISO: string) => {
-  const fecha = new Date(fechaISO);
+    const fecha = new Date(fechaISO);
+    return fecha.toLocaleTimeString("es-MX", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+  };
 
-  // ⚡ Convertir de UTC a UTC-7
-  const utc7 = new Date(fecha.getTime() - 7 * 60 * 60 * 1000);
+  // 📌 citas filtradas (YA SIN BUG DE FECHA)
+  const citasFiltradas = useMemo(() => {
+    return citas.filter((cita) => {
+      const cumpleEstatus =
+        filtroEstatus === "todos" || cita.estatus === filtroEstatus;
 
-  return utc7.toLocaleTimeString("es-MX", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false, // o true si quieres AM/PM
-  });
-};
+      const cumpleFecha =
+        !filtroFecha || fechaLocalISO(cita.fecha_cita) === filtroFecha;
 
-
-
+      return cumpleEstatus && cumpleFecha;
+    });
+  }, [citas, filtroEstatus, filtroFecha]);
 
   if (loading) {
     return (
@@ -159,64 +178,94 @@ const Home = () => {
 
         {paciente && (
           <div className={styles.pacienteInfo}>
-            <p>
-              <strong>Paciente:</strong> {paciente.nombre_completo}
-            </p>
-            <p>
-              <strong>NSS:</strong> {paciente.numero_seguridad_social}
-            </p>
+            <p>Paciente: {paciente.nombre_completo}</p>
+            <p>NSS: {paciente.numero_seguridad_social}</p>
           </div>
         )}
+
+        {/* 🔍 filtros */}
+        <div className={styles.filters}>
+          <select
+            value={filtroEstatus}
+            onChange={(e) => setFiltroEstatus(e.target.value)}
+          >
+            <option value="todos">Todos</option>
+            <option value="PP">Pendiente pago</option>
+            <option value="P">Pendiente</option>
+            <option value="AC">Confirmada</option>
+            <option value="A">Agendada</option>
+            <option value="X">Cancelada</option>
+            <option value="FN">Terminada</option>
+          </select>
+
+          <input
+            type="date"
+            value={filtroFecha}
+            onChange={(e) => setFiltroFecha(e.target.value)}
+          />
+
+          <button
+            onClick={() => {
+              setFiltroEstatus("todos");
+              setFiltroFecha("");
+            }}
+          >
+            Limpiar
+          </button>
+        </div>
 
         <div className={styles.tableContainer}>
           <table>
             <thead>
-  <tr>
-    <th>Folio</th>
-    <th>Doctor</th>
-    <th>Especialidad</th>
-    <th>Estado</th>
-    <th>Fecha</th>
-    <th>Hora</th>
-    <th>Consultorio</th>
-    <th>Costo</th>
-    <th>Acciones</th> {/* Nueva columna */}
-  </tr>
-</thead>
-<tbody>
-  {citas.length === 0 ? (
-    <tr>
-      <td colSpan={9} style={{ textAlign: "center" }}>
-        No hay citas pendientes
-      </td>
-    </tr>
-  ) : (
-    citas.map((cita) => (
-      <tr key={cita.folio_cita}>
-        <td>{cita.folio_cita}</td>
-        <td>{cita.doctor.nombre_completo}</td>
-        <td>
-          <CardiologyIcon />
-          {cita.doctor.especialidad}
-        </td>
-        <td>{cita.estatus_texto}</td>
-        <td>{formatearFecha(cita.fecha_cita)}</td>
-        <td>{formatearHora(cita.fecha_cita)}</td>
-        <td>{cita.consultorio.no_consultorio}</td>
-        <td>${cita.costo}</td>
-        <td>
-          <button
-            className={styles.detailButton} // Puedes estilizarlo en CSS
-            onClick={() => router.push(`/Patient/datailsDate?folio=${cita.folio_cita}`)}
-          >
-            Detalles
-          </button>
-        </td>
-      </tr>
-    ))
-  )}
-</tbody>
-
+              <tr>
+                <th>Folio</th>
+                <th>Doctor</th>
+                <th>Especialidad</th>
+                <th>Estado</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Consultorio</th>
+                <th>Costo</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {citasFiltradas.length === 0 ? (
+                <tr>
+                  <td colSpan={9} style={{ textAlign: "center" }}>
+                    No hay citas con esos filtros
+                  </td>
+                </tr>
+              ) : (
+                citasFiltradas.map((cita) => (
+                  <tr key={cita.folio_cita}>
+                    <td>{cita.folio_cita}</td>
+                    <td>{cita.doctor.nombre_completo}</td>
+                    <td>
+                      <CardiologyIcon />
+                      {cita.doctor.especialidad}
+                    </td>
+                    <td>{cita.estatus_texto}</td>
+                    <td>{formatearFecha(cita.fecha_cita)}</td>
+                    <td>{formatearHora(cita.fecha_cita)}</td>
+                    <td>{cita.consultorio.no_consultorio}</td>
+                    <td>${cita.costo}</td>
+                    <td>
+                      <button
+                        className={styles.detailButton}
+                        onClick={() =>
+                          router.push(
+                            `/Patient/datailsDate?folio=${cita.folio_cita}`
+                          )
+                        }
+                      >
+                        Detalles
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
           </table>
         </div>
       </div>

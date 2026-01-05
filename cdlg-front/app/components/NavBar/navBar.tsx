@@ -1,32 +1,65 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // Import correcto en App Router
+import { useRouter } from "next/navigation";
 import styles from "./navBar.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import NavMenu from "../NavMenu/navMenu";
 import TableButton from "../TableButton/tableButton";
-import Cookies from "js-cookie"; // Import necesario para borrar token
+import Cookies from "js-cookie";
 
 interface NavBarProps {
     links?: { label: string; href: string }[];
     opaque?: boolean;
+    role?: "patient" | "doctor" | "receptionist"; // 👈 nueva prop
 }
 
-const NavBar = ({ links = [], opaque = false }: NavBarProps) => {
+const NavBar = ({ links = [], opaque = false, role = "patient" }: NavBarProps) => {
     const [menuOpen, setMenuOpen] = useState(false);
-    const router = useRouter(); // ⚡ usar next/navigation en App Router
+    const router = useRouter();
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
     };
 
     const handleLogout = () => {
-        // Borra el token
         Cookies.remove("token");
-        // Redirige al login
         router.push("/Patient/login");
+    };
+
+    const renderMenuButtons = () => {
+        if (role === "doctor") {
+            return (
+                <>
+                    <TableButton text="Inicio" onClick={() => router.push("/Doctor/homeDoctor")} />
+                    <TableButton text="Mis Recetas" onClick={() => router.push("/Doctor/prescription")} />
+                    <TableButton text="Cerrar sesión" onClick={handleLogout} />
+                </>
+            );
+        }
+
+        if (role === "receptionist") {
+            return (
+                <>
+                    <TableButton text="Inicio" onClick={() => router.push("/Receptionist/home")} />
+                    <TableButton text="Registrar Empleado" onClick={() => router.push("/Receptionist/registerEmployee")} />
+                    <TableButton text="Citas del Día" onClick={() => router.push("/Receptionist/today")} />
+                    <TableButton text="Pacientes" onClick={() => router.push("/Receptionist/patients")} />
+                    <TableButton text="Cerrar sesión" onClick={handleLogout} />
+                </>
+            );
+        }
+
+        // 👇 Default: paciente (como estaba antes)
+        return (
+            <>
+                <TableButton text="Inicio" onClick={() => router.push("/Patient/home")} />
+                <TableButton text="Agendar Cita Nueva" onClick={() => router.push("/Patient/dates")} />
+                <TableButton text="Perfil" onClick={() => router.push("/Patient/profile")} />
+                <TableButton text="Cerrar sesión" onClick={handleLogout} />
+            </>
+        );
     };
 
     return (
@@ -46,22 +79,14 @@ const NavBar = ({ links = [], opaque = false }: NavBarProps) => {
                     </div>
 
                     <button className={styles.menuButton} onClick={toggleMenu}>
-                        <Image src="/NavBarShowMenu.svg" alt="=" width={20} height={20}></Image>
+                        <Image src="/NavBarShowMenu.svg" alt="=" width={20} height={20} />
                     </button>
                 </div>
             </nav>
 
             {menuOpen && (
                 <NavMenu
-                    buttons={
-                        <>
-                            <TableButton text="Inicio" onClick={() => router.push("/Patient/home")} />
-                            <TableButton text="Agendar Cita Nueva" onClick={() => router.push("/Patient/dates")} />
-                            <TableButton text="Perfil" onClick={() => router.push("/Patient/profile")} />
-                            {/* Botón de cerrar sesión */}
-                            <TableButton text="Cerrar sesión" onClick={handleLogout} />
-                        </>
-                    }
+                    buttons={renderMenuButtons()}
                 />
             )}
         </>

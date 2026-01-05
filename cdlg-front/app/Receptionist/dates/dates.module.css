@@ -1,0 +1,80 @@
+.container {
+    text-align: center;
+    margin-top: 70px;             /* Desplazar debajo del navbar */
+    padding: 20px;
+    height: calc(100vh - 140px);   /* Ajustar a tamaño disponible */
+    box-sizing: border-box;
+}
+
+.dateContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    gap: 50px;
+    min-height: calc(100vh - 190px); /* 70 navbar + 70 título */
+    margin-top: 30px;
+    box-sizing: border-box;
+}
+
+.stepsContainer {
+    padding: 30px;
+    width: 250px;
+    flex-shrink: 0;
+    background-color: #383838;
+    display: flex;
+    flex-direction: column;
+}
+
+.actionContainer {
+    background-color: #383838;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.stepList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.stepItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.diamond {
+    margin-right: 5px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.activeDiamond {
+    transform: rotate(-90deg);
+}
+
+.stepText {
+    font-size: 18px;
+    color: #d0d0d0;
+    margin: 0;
+}
+
+.titleContainer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* gap: 5px; */
+    /* margin-bottom: 10px; */
+}
+
+.titleIcon {
+    display: block;
+}
+
+.title {
+    font-size: 32px;
+    /* color: #ffffff; */
+    /* margin: 0; */
+}
+
+/* El resto permanece igual */
